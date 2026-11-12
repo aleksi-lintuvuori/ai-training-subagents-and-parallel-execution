@@ -9,7 +9,7 @@
 **Parallel (three subagents spawned within about 20 seconds of each other):**
 - **Agent A:** Steps 3 **and** 4 together, the JSON endpoint and the CSV export in `backend/src/routes/reports.ts`, plus the route registration in `index.ts`.
 - **Agent B:** Step 5, `ReportView.tsx` and wiring it into `App.tsx`.
-- **Agent C:** Step 6, unit tests for `calculateMonthlyReport`.
+- **Agent C:** Step 6, unit tests for `calculateMonthlyReport`. 
 
 **Was it what I expected?** Mostly yes, with two differences from how I had labelled the plan:
 - In the version I pasted, Steps 1 and 2 were marked "(parallel)". Claude ran them sequentially and did them itself, which was the right call: the helper imports the types, so they are not truly independent.
