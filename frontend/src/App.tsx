@@ -3,11 +3,17 @@ import { Header } from './components/Header';
 import { ExpenseList } from './components/ExpenseList';
 import { AddExpenseForm } from './components/AddExpenseForm';
 import { BudgetDashboard } from './components/BudgetDashboard';
+import { ReportView } from './components/ReportView';
 import { Category, Expense } from './types';
 
 export default function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [reportRefreshKey, setReportRefreshKey] = useState(0);
+
+  function refreshReport() {
+    setReportRefreshKey((k) => k + 1);
+  }
 
   async function fetchExpenses() {
     const res = await fetch('http://localhost:3001/expenses');
@@ -22,6 +28,7 @@ export default function App() {
   async function deleteExpense(id: number) {
     await fetch(`http://localhost:3001/expenses/${id}`, { method: 'DELETE' });
     fetchExpenses();
+    refreshReport();
   }
 
   useEffect(() => {
@@ -32,6 +39,12 @@ export default function App() {
   function handleExpenseMutation() {
     fetchExpenses();
     fetchCategories();
+    refreshReport();
+  }
+
+  function handleCategoryAdded() {
+    fetchCategories();
+    refreshReport();
   }
 
   return (
@@ -39,10 +52,11 @@ export default function App() {
       <Header />
       <BudgetDashboard
         categories={categories}
-        onCategoryAdded={fetchCategories}
+        onCategoryAdded={handleCategoryAdded}
         onCategoryDeleted={handleExpenseMutation}
       />
       <AddExpenseForm onAdd={handleExpenseMutation} categories={categories} />
+      <ReportView refreshKey={reportRefreshKey} />
       <h2 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Expenses</h2>
       <ExpenseList expenses={expenses} onDelete={deleteExpense} categories={categories} onUpdate={handleExpenseMutation} />
     </div>
